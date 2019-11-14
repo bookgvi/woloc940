@@ -263,11 +263,7 @@ export default {
   },
   created: async function () {
     if (this.$route.query.updateBookings) {
-      this.selectedBooking = await this.$app.bookings.getOne(this.$route.query.updateBookings)
-      this.$nextTick(_ => {
-        this.isCreate = false
-        this.dialogState = true
-      })
+      this.findBooking(null, this.$route.query.updateBookings)
     }
     this.calendarToday()
   },
@@ -555,11 +551,15 @@ export default {
       })
       this.technicalDialogState = true
     },
-    async findBooking (index) {
+    async findBooking (index, id) {
       if (this.forNewBooking.date !== '') return
       if (this.isResizeNow) return
       this.isCreate = false
-      this.selectedBooking = await this.$app.bookings.getOne(this.events[index].id)
+      if (index) {
+        this.selectedBooking = await this.$app.bookings.getOne(this.events[index].id)
+      } else {
+        this.selectedBooking = await this.$app.bookings.getOne(id)
+      }
       // console.log(this.selectedBooking)
       this.dialogState = true
     },
